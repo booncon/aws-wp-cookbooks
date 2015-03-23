@@ -35,7 +35,7 @@ node[:deploy].each do |app_name, deploy|
             :user       => (deploy[:database][:username] rescue nil),
             :password   => (deploy[:database][:password] rescue nil),
             :host       => (deploy[:database][:host] rescue nil),
-            :protocol   => (deploy[:ssl_certificate] !== nil ? 'https://' : 'http://'),
+            :protocol   => (deploy[:ssl_certificate] != nil ? 'https://' : 'http://'),
             :domain     => (deploy[:domains][0] rescue nil),
             :stage     => (deploy[:environment_variables][:stage] rescue nil),
             :keys       => (keys rescue nil)
