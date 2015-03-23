@@ -15,6 +15,10 @@ request = Net::HTTP::Get.new(uri.request_uri)
 response = http.request(request)
 keys = response.body
 
+keys = keys.gsub(/', +'/, "='")
+keys = keys.gsub(/define\('/, "")
+keys = keys.gsub(/'\);/, "'")
+
 
 # Create the Wordpress config file wp-config.php with corresponding values
 node[:deploy].each do |app_name, deploy|
@@ -31,7 +35,8 @@ node[:deploy].each do |app_name, deploy|
             :user       => (deploy[:database][:username] rescue nil),
             :password   => (deploy[:database][:password] rescue nil),
             :host       => (deploy[:database][:host] rescue nil),
-            :domain     => (deploy[:database][:host] rescue nil),
+            :domain     => (deploy[:database][:domain] rescue nil),
+            :stage     => (deploy[:database][:env_var] rescue nil),
             :keys       => (keys rescue nil)
         )
     end
