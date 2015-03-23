@@ -4,7 +4,7 @@ node[:deploy].each do |app_name, deploy|
   #   action :install
   # end
 
-  purge_before_symlink %w{web/app/uploads web/app/cache web/app/w3tc-config}
+  # purge_before_symlink %w{web/app/uploads web/app/cache web/app/w3tc-config}
   # create_dirs_before_symlink %w{web/app/uploads web/app/cache web/app/w3tc-config}
   symlinks  "web/app/uploads" => "web/app/uploads",
             "web/app/cache" => "web/app/cache",
