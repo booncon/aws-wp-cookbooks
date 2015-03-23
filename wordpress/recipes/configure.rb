@@ -28,7 +28,11 @@ node[:deploy].each do |app_name, deploy|
         mode 0660
         group deploy[:group]
 
-        owner "apache"
+        if platform?("ubuntu")
+          owner "www-data"
+        elsif platform?("amazon")
+          owner "apache"
+        end
 
         variables(
             :database   => (deploy[:database][:database] rescue nil),
