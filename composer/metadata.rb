@@ -1,11 +1,7 @@
-name             "composer"
-maintainer       "Morphodo"
-maintainer_email "development@morphodo.com"
-license          "MIT"
-description      "Recipe to install PHP package manager"
-long_description IO.read(File.join(File.dirname(__FILE__), 'README.rst'))
-version          "0.2.1"
+name              "composer"
+maintainer        "Juan Manuel Torres"
+maintainer_email  "kinojman@gmail.com"
+license           "MIT"
+description       "Installs or Updates PHP Project dependencies using Composer"
+version           "1.0.0"
 
-%w{ ubuntu debian centos redhat fedora }.each do |os|
-	supports os
-end
