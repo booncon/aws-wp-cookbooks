@@ -13,26 +13,29 @@ node[:deploy].each do |app_name, deploy|
   #           "web/.htaccess" => "web/.htaccess"
 
 
+  if File.exist?("#{node[:symlink_path]}/web/app/uploads")
+    link "#{deploy[:deploy_to]}/#{node[:release_path]}/web/app/uploads" do
+      to "#{node[:symlink_path]}/web/app/uploads"
+      group group deploy[:group]
+      if platform?("ubuntu")
+        owner "www-data"
+      elsif platform?("amazon")
+        owner "apache"
+      end  
+    end
+  end  
 
-  link "#{deploy[:deploy_to]}/#{node[:release_path]}/web/app/uploads" do
-    to "#{node[:symlink_path]}/web/app/uploads"
-    group group deploy[:group]
-    if platform?("ubuntu")
-      owner "www-data"
-    elsif platform?("amazon")
-      owner "apache"
-    end  
-  end
-
-  link "#{deploy[:deploy_to]}/#{node[:release_path]}/.env" do
-    to "#{node[:symlink_path]}/.env"
-    group group deploy[:group]
-    if platform?("ubuntu")
-      owner "www-data"
-    elsif platform?("amazon")
-      owner "apache"
-    end  
-  end
+  if File.exist?("#{node[:symlink_path]}/.env")
+    link "#{deploy[:deploy_to]}/#{node[:release_path]}/.env" do
+      to "#{node[:symlink_path]}/.env"
+      group group deploy[:group]
+      if platform?("ubuntu")
+        owner "www-data"
+      elsif platform?("amazon")
+        owner "apache"
+      end  
+    end
+  end  
 
   # link "#{deploy[:deploy_to]}/#{node[:release_path]}/web/app/uploads" do
   #   to "#{node[:symlink_path]}/web/app/uploads"
