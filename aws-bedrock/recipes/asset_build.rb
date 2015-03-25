@@ -12,6 +12,8 @@ node[:deploy].each do |app_name, deploy|
   #           ".env" => ".env",
   #           "web/.htaccess" => "web/.htaccess"
 
+
+
   link "#{deploy[:deploy_to]}/#{node[:release_path]}/web/app/uploads" do
     to "#{node[:symlink_path]}/web/app/uploads"
     group group deploy[:group]
@@ -21,6 +23,56 @@ node[:deploy].each do |app_name, deploy|
       owner "apache"
     end  
   end
+
+  link "#{deploy[:deploy_to]}/#{node[:release_path]}/.env" do
+    to "#{node[:symlink_path]}/.env"
+    group group deploy[:group]
+    if platform?("ubuntu")
+      owner "www-data"
+    elsif platform?("amazon")
+      owner "apache"
+    end  
+  end
+
+  # link "#{deploy[:deploy_to]}/#{node[:release_path]}/web/app/uploads" do
+  #   to "#{node[:symlink_path]}/web/app/uploads"
+  #   group group deploy[:group]
+  #   if platform?("ubuntu")
+  #     owner "www-data"
+  #   elsif platform?("amazon")
+  #     owner "apache"
+  #   end  
+  # end
+
+  # link "#{deploy[:deploy_to]}/#{node[:release_path]}/web/app/uploads" do
+  #   to "#{node[:symlink_path]}/web/app/uploads"
+  #   group group deploy[:group]
+  #   if platform?("ubuntu")
+  #     owner "www-data"
+  #   elsif platform?("amazon")
+  #     owner "apache"
+  #   end  
+  # end
+
+  # link "#{deploy[:deploy_to]}/#{node[:release_path]}/web/app/uploads" do
+  #   to "#{node[:symlink_path]}/web/app/uploads"
+  #   group group deploy[:group]
+  #   if platform?("ubuntu")
+  #     owner "www-data"
+  #   elsif platform?("amazon")
+  #     owner "apache"
+  #   end  
+  # end
+
+  # link "#{deploy[:deploy_to]}/#{node[:release_path]}/web/app/uploads" do
+  #   to "#{node[:symlink_path]}/web/app/uploads"
+  #   group group deploy[:group]
+  #   if platform?("ubuntu")
+  #     owner "www-data"
+  #   elsif platform?("amazon")
+  #     owner "apache"
+  #   end  
+  # end
 
 
 end  
