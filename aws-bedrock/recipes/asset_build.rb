@@ -1,12 +1,10 @@
-require 'FileUtils'
-
 node[:deploy].each do |app_name, deploy|
 
   # composer_package "#{deploy[:deploy_to]}/current" do
   #   action :install
   # end
 
-  # purge_before_symlink %w{web/app/uploads web/app/cache web/app/w3tc-config}
+  purge_before_symlink %w{web/app/uploads web/app/cache web/app/w3tc-config}
   # create_dirs_before_symlink %w{web/app/uploads web/app/cache web/app/w3tc-config}
   # symlinks  "web/app/uploads" => "web/app/uploads",
   #           "web/app/cache" => "web/app/cache",
@@ -16,7 +14,6 @@ node[:deploy].each do |app_name, deploy|
 
 
   if File.exist?("#{node[:symlink_path]}/web/app/uploads")
-    FileUtils.rm_rf("#{deploy[:deploy_to]}/#{node[:release_path]}/web/app/uploads")
     link "#{deploy[:deploy_to]}/#{node[:release_path]}/web/app/uploads" do
       to "#{node[:symlink_path]}/web/app/uploads"
       group group deploy[:group]
@@ -29,7 +26,6 @@ node[:deploy].each do |app_name, deploy|
   end  
 
   if File.exist?("#{node[:symlink_path]}/.env")
-    FileUtils.rm_rf("#{deploy[:deploy_to]}/#{node[:release_path]}/.env")
     link "#{deploy[:deploy_to]}/#{node[:release_path]}/.env" do
       to "#{node[:symlink_path]}/.env"
       group group deploy[:group]
