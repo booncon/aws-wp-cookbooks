@@ -14,6 +14,7 @@ node[:deploy].each do |app_name, deploy|
 
 
   if File.exist?("#{node[:symlink_path]}/web/app/uploads")
+    Dir.rmdir("#{deploy[:deploy_to]}/#{node[:release_path]}/web/app/uploads")
     link "#{deploy[:deploy_to]}/#{node[:release_path]}/web/app/uploads" do
       to "#{node[:symlink_path]}/web/app/uploads"
       group group deploy[:group]
@@ -26,6 +27,7 @@ node[:deploy].each do |app_name, deploy|
   end  
 
   if File.exist?("#{node[:symlink_path]}/.env")
+    File.delete("#{deploy[:deploy_to]}/#{node[:release_path]}/.env")
     link "#{deploy[:deploy_to]}/#{node[:release_path]}/.env" do
       to "#{node[:symlink_path]}/.env"
       group group deploy[:group]
