@@ -6,11 +6,23 @@ node[:deploy].each do |app_name, deploy|
 
   # purge_before_symlink %w{web/app/uploads web/app/cache web/app/w3tc-config}
   # create_dirs_before_symlink %w{web/app/uploads web/app/cache web/app/w3tc-config}
-  symlinks  "web/app/uploads" => "web/app/uploads",
-            "web/app/cache" => "web/app/cache",
-            "web/app/w3tc-config" => "web/app/w3tc-config",
-            ".env" => ".env",
-            "web/.htaccess" => "web/.htaccess"
+  # symlinks  "web/app/uploads" => "web/app/uploads",
+  #           "web/app/cache" => "web/app/cache",
+  #           "web/app/w3tc-config" => "web/app/w3tc-config",
+  #           ".env" => ".env",
+  #           "web/.htaccess" => "web/.htaccess"
+
+  link "#{current_release}/web/app/uploads" do
+    to "/var/www/shared/web/app/uploads"
+    group group deploy[:group]
+    if platform?("ubuntu")
+      owner "www-data"
+    elsif platform?("amazon")
+      owner "apache"
+    end  
+  end
+
+
 end  
 
 # %w{.env web/.htaccess}
