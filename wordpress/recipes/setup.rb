@@ -1,4 +1,4 @@
-app = search(:aws_opsworks_app).first
+app = search("aws_opsworks_app").first
 app_path = "/srv/#{app['shortname']}"
 
 apt_package "nginx-extras" do
