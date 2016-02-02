@@ -1,0 +1,48 @@
+server {
+  listen   80;
+  server_name  _;
+
+  root   /var/www/wp/;
+
+  access_log  /var/log/nginx/wordpress.access.log;
+  error_log   /var/log/nginx/wordpress.error.log;
+
+  index index.php index.htm index.html;
+
+  client_max_body_size 100M;
+
+  client_body_timeout             5s;
+  client_header_timeout           5s;
+  keepalive_timeout               75s;
+  send_timeout                    15s;
+
+  location / {
+    try_files $uri $uri/ @wp;
+  }
+
+  location @wp {
+    rewrite ^(.*) /index.php?$1 last;
+  }
+
+  location ~ .php$ {
+    if (!-f $request_filename) {
+      return 404;
+    }
+
+    try_files       $uri /index.php;
+    fastcgi_pass unix:/var/run/php5-fpm.sock;
+    fastcgi_read_timeout 30;
+    include  /etc/nginx/fastcgi_params;
+    fastcgi_index index.php;
+    fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+    fastcgi_param PHP_VALUE "post_max_size=80M";
+    fastcgi_param PHP_VALUE "upload_max_filesize=80M";
+    fastcgi_param PHP_VALUE "max_input_time=120";
+    fastcgi_param PHP_VALUE "max_execution_time=120";
+  }
+
+  location /. {
+    return 404;
+  }
+
+}
