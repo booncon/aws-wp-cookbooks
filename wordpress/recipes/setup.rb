@@ -1,4 +1,8 @@
 app = search("aws_opsworks_app").first
+
+Chef::Log.info("********** The app's short name is '#{app['shortname']}' **********")
+Chef::Log.info("********** The app's URL is '#{app['app_source']['url']}' **********")
+
 app_path = "/srv/#{app['shortname']}"
 
 apt_package "nginx-extras" do
@@ -14,7 +18,7 @@ action :install
 end
 
 git node["phpapp"]["path"] do
-  repository "#{app['appsource']['url']}"
+  repository "#{app['app_source']['url']}"
   reference "deploy"
   action :sync
 end
