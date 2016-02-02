@@ -1,0 +1,6 @@
+maintainer       "booncon PIXELS"
+maintainer_email "hello@pixels.fi"
+license          "All rights reserved"
+description      "Deploy latest wordpress"
+long_description "Deploy latest wordpress"
+version          "0.0.1"
