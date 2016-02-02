@@ -1,3 +1,4 @@
+name             "wordpress"
 maintainer       "booncon PIXELS"
 maintainer_email "hello@pixels.fi"
 license          "All rights reserved"
