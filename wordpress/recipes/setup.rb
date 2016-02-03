@@ -16,7 +16,6 @@ end
 
 execute "ssh-keyscan" do
   command "ssh-keyscan github.com >> ~/.ssh/known_hosts"
-  action :nothing
 end
 
 file "/home/ubuntu/.ssh/id_rsa" do
@@ -37,7 +36,6 @@ end
 
 execute "clone-repository" do
   command "git clone #{app['app_source']['url']} #{node['phpapp']['path']}"
-  action :nothing
 end
 
 template "/etc/nginx/nginx.conf" do
