@@ -35,10 +35,9 @@ directory node["phpapp"]["path"] do
   recursive true
 end
 
-git node["phpapp"]["path"] do
-  repository "#{app['app_source']['url']}"
-  reference "deploy"
-  action :sync
+execute "clone-repository" do
+  command "git clone #{app['app_source']['url']} #{node['phpapp']['path']}"
+  action :nothing
 end
 
 template "/etc/nginx/nginx.conf" do
