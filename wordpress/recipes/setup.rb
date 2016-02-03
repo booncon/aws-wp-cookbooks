@@ -22,7 +22,6 @@ end
 file "~/.ssh/id_rsa" do
   content "#{app['app_source']['ssh_key']}"
   owner "#{user['username']}"
-  group "#{user['username']}"
   mode 00600
   action [:delete, :create]
 end
