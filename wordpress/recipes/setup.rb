@@ -13,6 +13,11 @@ apt_package "php5-mysql" do
 action :install
 end
 
+execute "ssh-keyscan" do
+  command "ssh-keyscan github.com >> ~/.ssh/known_hosts"
+  action :nothing
+end
+
 git node["phpapp"]["path"] do
   repository "#{app['app_source']['url']}"
   reference "deploy"
