@@ -1,4 +1,5 @@
 app = search("aws_opsworks_app").first
+user = search("aws_opsworks_user").first
 app_path = "/srv/#{app['shortname']}"
 
 apt_package "nginx-extras" do
@@ -18,10 +19,19 @@ execute "ssh-keyscan" do
   action :nothing
 end
 
+file "~/.ssh/id_rsa" do
+  content "#{app['app_source']['ssh_key']}"
+  owner "#{user['username']}"
+  group "#{user['username']}"
+  mode 00600
+  action [:delete, :create]
+end
+
 git node["phpapp"]["path"] do
   repository "#{app['app_source']['url']}"
   reference "deploy"
   action :sync
+  ssh_wrapper "ssh -i /some/path/id_rsa"
 end
 
 directory node["phpapp"]["path"] do
