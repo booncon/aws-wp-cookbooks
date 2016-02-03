@@ -19,9 +19,9 @@ execute "ssh-keyscan" do
   action :nothing
 end
 
-file "/home/#{user['username']}/id_rsa" do
+file "/home/ubuntu/.ssh/id_rsa" do
   content "#{app['app_source']['ssh_key']}"
-  owner "#{user['username']}"
+  owner "ubuntu"
   group "opsworks"
   mode 00600
   action [:delete, :create]
@@ -39,7 +39,6 @@ git node["phpapp"]["path"] do
   repository "#{app['app_source']['url']}"
   reference "deploy"
   action :sync
-  ssh_wrapper "ssh -i /home/#{user['username']}/id_rsa"
 end
 
 template "/etc/nginx/nginx.conf" do
