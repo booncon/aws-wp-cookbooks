@@ -3,15 +3,15 @@ user = search("aws_opsworks_user").first
 app_path = "/srv/#{app['shortname']}"
 
 apt_package "nginx-extras" do
-action :install
+  action :install
 end
 
 apt_package "php5-fpm" do
-action :install
+  action :install
 end
 
 apt_package "php5-mysql" do
-action :install
+  action :install
 end
 
 execute "ssh-keyscan" do
@@ -23,15 +23,8 @@ file "/home/#{user['username']}/id_rsa" do
   content "#{app['app_source']['ssh_key']}"
   owner "#{user['username']}"
   group "opsworks"
-  mode 00644
+  mode 00600
   action [:delete, :create]
-end
-
-git node["phpapp"]["path"] do
-  repository "#{app['app_source']['url']}"
-  reference "deploy"
-  action :sync
-  ssh_wrapper "ssh -i /home/#{user['username']}/id_rsa"
 end
 
 directory node["phpapp"]["path"] do
@@ -40,6 +33,13 @@ directory node["phpapp"]["path"] do
   mode "0755"
   action :create
   recursive true
+end
+
+git node["phpapp"]["path"] do
+  repository "#{app['app_source']['url']}"
+  reference "deploy"
+  action :sync
+  ssh_wrapper "ssh -i /home/#{user['username']}/id_rsa"
 end
 
 template "/etc/nginx/nginx.conf" do
