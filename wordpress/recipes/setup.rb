@@ -31,7 +31,7 @@ git node["phpapp"]["path"] do
   repository "#{app['app_source']['url']}"
   reference "deploy"
   action :sync
-  ssh_wrapper "ssh -i /some/path/id_rsa"
+  ssh_wrapper "ssh -i ~/.ssh/id_rsa"
 end
 
 directory node["phpapp"]["path"] do
