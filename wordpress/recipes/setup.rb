@@ -23,7 +23,7 @@ file "/home/#{user['username']}/.ssh/id_rsa" do
   content "#{app['app_source']['ssh_key']}"
   owner "#{user['username']}"
   group "opsworks"
-  mode 00640
+  mode 00644
   action [:delete, :create]
 end
 
