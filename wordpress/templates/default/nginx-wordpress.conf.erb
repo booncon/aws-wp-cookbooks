@@ -17,39 +17,39 @@ server {
   send_timeout                    15s;
 
   location = /favicon.ico {
-  	log_not_found off;
-  	access_log off;
+    log_not_found off;
+    access_log off;
   }
 
   location = /robots.txt {
-  	allow all;
-  	log_not_found off;
-  	access_log off;
+    allow all;
+    log_not_found off;
+    access_log off;
   }
 
   location ~ /\. {
-  	deny all;
+    deny all;
   }
 
   location ~* /(?:uploads|files)/.*\.php$ {
-  	deny all;
+    deny all;
   }
 
   location / {
-  	try_files $uri $uri/ /index.php?$args;
+    try_files $uri $uri/ /index.php?$args;
   }
 
   rewrite /wp-admin$ $scheme://$host$uri/ permanent;
 
   location ~* ^.+\.(ogg|ogv|svg|svgz|eot|otf|woff|mp4|ttf|rss|atom|jpg|jpeg|gif|png|ico|zip|tgz|gz|rar|bz2|doc|xls|exe|ppt|tar|mid|midi|wav|bmp|rtf)$ {
-         access_log off; log_not_found off; expires max;
+    access_log off; log_not_found off; expires max;
   }
 
   location ~ [^/]\.php(/|$) {
-  	fastcgi_split_path_info ^(.+?\.php)(/.*)$;
-  	if (!-f $document_root$fastcgi_script_name) {
-  		return 404;
-  	}
+    fastcgi_split_path_info ^(.+?\.php)(/.*)$;
+    if (!-f $document_root$fastcgi_script_name) {
+      return 404;
+    }
 
     fastcgi_pass unix:/var/run/php5-fpm.sock;
     fastcgi_read_timeout 30;
