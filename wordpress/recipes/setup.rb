@@ -34,8 +34,20 @@ directory node["phpapp"]["path"] do
   recursive true
 end
 
-execute "clone-repository" do
-  command "git clone #{app['app_source']['url']} #{node['phpapp']['path']}"
+execute "ssh-git-clone" do
+  command "ssh-agent sh -c 'ssh-add /home/#{user['username']}/.ssh/id_rsa; git clone #{app['app_source']['url']} #{node['phpapp']['path']}'"
+end
+
+execute "change-file-permissions" do
+  command "find #{node['phpapp']['path']} -type f -exec chmod 640 {} +"
+end
+
+execute "change-directory-permissions" do
+  command "find #{node['phpapp']['path']} -type d -exec chmod 750 {} +"
+end
+
+execute "change-ownership" do
+  command "chown -R www-data:www-data #{node['phpapp']['path']}"
 end
 
 template "/etc/nginx/nginx.conf" do
