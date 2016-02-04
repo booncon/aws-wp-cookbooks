@@ -1,6 +1,5 @@
 app = search("aws_opsworks_app").first
 user = search("aws_opsworks_user").first
-app_path = "/srv/#{app['shortname']}"
 
 apt_package "nginx-extras" do
   action :install
@@ -29,7 +28,7 @@ end
 directory node["phpapp"]["path"] do
   owner "www-data"
   group "www-data"
-  mode "0755"
+  mode "2775"
   action :create
   recursive true
 end
@@ -38,32 +37,36 @@ execute "ssh-git-clone" do
   command "ssh-agent sh -c 'ssh-add /home/#{user['username']}/.ssh/id_rsa; git clone #{app['app_source']['url']} #{node['phpapp']['path']}'"
 end
 
-execute "change-file-permissions" do
-  command "find #{node['phpapp']['path']} -type f -exec chmod 640 {} +"
+execute "change-directory-permissions" do
+  command "find #{node['phpapp']['path']} -type d -exec chmod 2775 {} +"
 end
 
-execute "change-directory-permissions" do
-  command "find #{node['phpapp']['path']} -type d -exec chmod 750 {} +"
+execute "change-file-permissions" do
+  command "find #{node['phpapp']['path']} -type f -exec chmod 0664 {} +"
 end
 
 execute "change-ownership" do
   command "chown -R www-data:www-data #{node['phpapp']['path']}"
 end
 
+execute "add-user-to-group" do
+  command "sudo usermod -a -G www-data #{user['username']}"
+end
+
 template "/etc/nginx/nginx.conf" do
- source "nginx.conf.erb"
- owner "root"
- group "www-data"
- mode "640"
- notifies :run, "execute[reload-nginx]"
+  source "nginx.conf.erb"
+  owner "root"
+  group "www-data"
+  mode "640"
+  notifies :run, "execute[reload-nginx]"
 end
 
 template "/etc/nginx/sites-available/nginx-wordpress.conf" do
- source "nginx-wordpress.conf.erb"
- owner "root"
- group "www-data"
- mode "640"
- notifies :run, "execute[reload-nginx]"
+  source "nginx-wordpress.conf.erb"
+  owner "root"
+  group "www-data"
+  mode "640"
+  notifies :run, "execute[reload-nginx]"
 end
 
 link "/etc/nginx/sites-enabled/nginx-wordpress.conf" do
