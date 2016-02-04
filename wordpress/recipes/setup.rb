@@ -18,9 +18,9 @@ execute "ssh-keyscan" do
   command "ssh-keyscan github.com >> ~/.ssh/known_hosts"
 end
 
-file "/home/ubuntu/.ssh/id_rsa" do
+file "/home/#{user['username']}/.ssh/id_rsa" do
   content "#{app['app_source']['ssh_key']}"
-  owner "ubuntu"
+  owner "#{user['username']}"
   group "opsworks"
   mode 00600
   action [:delete, :create]
