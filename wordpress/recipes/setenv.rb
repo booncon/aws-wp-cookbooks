@@ -2,17 +2,18 @@ db = search("aws_opsworks_rds_db_instance").first
 app = search("aws_opsworks_app").first
 
 execute "set-db-name" do
-  command "export DB_NAME = #{app['data_sources']['database_name']}"
+  app_db = app['data_sources'].first
+  command "echo DB_NAME=#{app_db['database_name']} >> /etc/environment"
 end
 
 execute "set-db-host" do
-  command "export DB_HOST = #{db['address']}"
+  command "echo DB_HOST=#{db['address']} >> /etc/environment"
 end
 
 execute "set-db-user" do
-  command "export DB_USER = #{db['db_user']}"
+  command "echo DB_USER=#{db['db_user']} >> /etc/environment"
 end
 
 execute "set-db-password" do
-  command "export DB_PASSWORD = #{db['db_password']}"
+  command "echo DB_PASSWORD=#{db['db_password']} >> /etc/environment"
 end
