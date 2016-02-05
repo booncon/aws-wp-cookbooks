@@ -9,6 +9,10 @@ apt_package "php5-fpm" do
   action :install
 end
 
+apt_package "php5-cli" do
+  action :install
+end
+
 apt_package "php5-mysql" do
   action :install
 end
