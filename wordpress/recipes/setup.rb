@@ -17,6 +17,10 @@ apt_package "php5-mysql" do
   action :install
 end
 
+apt_package "npm" do
+  action :install
+end
+
 execute "ssh-keyscan" do
   command "ssh-keyscan github.com >> ~/.ssh/known_hosts"
 end
@@ -86,4 +90,20 @@ end
 execute "reload-nginx" do
   command "nginx -t && service nginx reload"
   action :nothing
+end
+
+execute "install-composer" do
+  command "curl -sS https://getcomposer.org/installer | php"
+end
+
+execute "install-composer-globally" do
+  command "mv composer.phar /usr/local/bin/composer"
+end
+
+execute "run-composer" do
+  command "composer install -d #{node['phpapp']['path']}"
+end
+
+execute "npm-install" do
+  command "npm --prefix /var/www/wp/web/app/themes/#{app['environment']['THEME_NAME']}/ install /var/www/wp/web/app/themes/#{app['environment']['THEME_NAME']}/"
 end
