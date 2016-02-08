@@ -105,5 +105,5 @@ execute "run-composer" do
 end
 
 execute "npm-install" do
-  command "npm --prefix /var/www/wp/web/app/themes/#{app['environment']['THEME_NAME']}/ install /var/www/wp/web/app/themes/#{app['environment']['THEME_NAME']}/"
+  command "npm --prefix #{node['phpapp']['path']}web/app/themes/#{app['environment']['THEME_NAME']}/ install #{node['phpapp']['path']}web/app/themes/#{app['environment']['THEME_NAME']}/"
 end
