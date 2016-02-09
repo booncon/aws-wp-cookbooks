@@ -6,7 +6,6 @@ current_link = "#{site_root}current"
 time =  Time.new.strftime("%Y%m%d%H%M%S")
 release_dir = "#{site_root}releases/#{time}/"
 shared_upload_dir = "#{site_root}shared/web/app/uploads/"
-upload_path = "web/app/uploads/"
 
 apt_package "nginx-extras" do
   action :install
