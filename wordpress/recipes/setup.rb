@@ -1,6 +1,13 @@
 app = search("aws_opsworks_app").first
 user = search("aws_opsworks_user").first
 
+site_root = "#{node['web_root']}#{app['environment']['THEME_NAME']}/"
+current_link = "#{site_root}current"
+time =  Time.new.strftime("%Y%m%d%H%M%S")
+release_dir = "#{site_root}releases/#{time}/"
+shared_upload_dir = "#{site_root}shared/web/app/uploads/"
+upload_path = "web/app/uploads/"
+
 apt_package "nginx-extras" do
   action :install
 end
@@ -33,7 +40,7 @@ file "/home/#{user['username']}/.ssh/id_rsa" do
   action [:delete, :create]
 end
 
-directory node["phpapp"]["path"] do
+directory "#{site_root}" do
   owner "www-data"
   group "www-data"
   mode "2775"
@@ -41,20 +48,44 @@ directory node["phpapp"]["path"] do
   recursive true
 end
 
+directory "#{release_dir}" do
+  owner "www-data"
+  group "www-data"
+  mode "2775"
+  action :create
+  recursive true
+end
+
+directory "#{shared_upload_dir}" do
+  owner "www-data"
+  group "www-data"
+  mode "2777"
+  action :create
+  recursive true
+end
+
 execute "ssh-git-clone" do
-  command "ssh-agent sh -c 'ssh-add /home/#{user['username']}/.ssh/id_rsa; git clone #{app['app_source']['url']} #{node['phpapp']['path']}'"
+  command "ssh-agent sh -c 'ssh-add /home/#{user['username']}/.ssh/id_rsa; git clone #{app['app_source']['url']} #{release_dir}'"
+end
+
+link "#{current_link}" do
+  to "#{release_dir}"
+end
+
+link "#{release_dir}web/app/uploads" do
+  to "#{shared_upload_dir}"
 end
 
 execute "change-directory-permissions" do
-  command "find #{node['phpapp']['path']} -type d -exec chmod 2775 {} +"
+  command "find #{site_root} -type d -exec chmod 2775 {} +"
 end
 
 execute "change-file-permissions" do
-  command "find #{node['phpapp']['path']} -type f -exec chmod 0664 {} +"
+  command "find #{site_root} -type f -exec chmod 0664 {} +"
 end
 
 execute "change-ownership" do
-  command "chown -R www-data:www-data #{node['phpapp']['path']}"
+  command "chown -R www-data:www-data #{site_root}"
 end
 
 execute "add-user-to-group" do
@@ -101,9 +132,21 @@ execute "install-composer-globally" do
 end
 
 execute "run-composer" do
-  command "composer install -d #{node['phpapp']['path']}"
+  command "composer install -d #{release_dir}"
 end
 
 execute "npm-install" do
-  command "npm --prefix #{node['phpapp']['path']}web/app/themes/#{app['environment']['THEME_NAME']}/ install #{node['phpapp']['path']}web/app/themes/#{app['environment']['THEME_NAME']}/"
+  command "npm --prefix #{release_dir}web/app/themes/#{app['environment']['THEME_NAME']}/ install #{release_dir}web/app/themes/#{app['environment']['THEME_NAME']}/"
+end
+
+execute "npm-gulp" do
+  command "npm install -g gulp"
+end
+
+execute "npm-grunt" do
+  command "npm install -g grunt"
+end
+
+execute "npm-bower" do
+  command "npm install -g bower"
 end
