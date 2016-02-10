@@ -109,6 +109,10 @@ template "/etc/nginx/sites-available/nginx-wordpress.conf" do
   group "www-data"
   mode "640"
   notifies :run, "execute[reload-nginx]"
+
+  variables(
+    :web_root => "#{app['environment']['THEME_NAME']}"
+  )
 end
 
 link "/etc/nginx/sites-enabled/nginx-wordpress.conf" do

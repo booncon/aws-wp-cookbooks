@@ -2,7 +2,7 @@ server {
   listen   80;
   server_name  _;
 
-  root   /var/www/wp/web/;
+  root   /var/www/<%= @web_root %>/current/web/;
 
   access_log  /var/log/nginx/wordpress.access.log;
   error_log   /var/log/nginx/wordpress.error.log;
