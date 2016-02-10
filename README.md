@@ -19,3 +19,22 @@ Recipes and lifecycle events
 * **Setup:** wordpress::createenvfile, wordpress::setup
 
 * **Deploy** wordpress::deploy
+
+
+Required Environment Variables
+------------------------------
+
+Before running the recipes you need to have the next environment variables set. You can define them in the Apps settings in OpsWorks.
+
+* WP_ENV
+* WP_HOME
+* WP_SITEURL
+* AUTH_KEY
+* SECURE_AUTH_KEY
+* LOGGED_IN_KEY
+* NONCE_KEY
+* AUTH_SALT
+* SECURE_AUTH_SALT
+* LOGGED_IN_SALT
+* NONCE_SALT
+* THEME_NAME
