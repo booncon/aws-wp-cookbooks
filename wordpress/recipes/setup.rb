@@ -47,41 +47,12 @@ directory "#{site_root}" do
   recursive true
 end
 
-directory "#{release_dir}" do
-  owner "www-data"
-  group "www-data"
-  mode "2775"
-  action :create
-  recursive true
-end
-
 directory "#{shared_upload_dir}" do
   owner "www-data"
   group "www-data"
   mode "2777"
   action :create
   recursive true
-end
-
-execute "ssh-git-clone" do
-  command "ssh-agent sh -c 'ssh-add /home/#{user['username']}/.ssh/id_rsa; git clone #{app['app_source']['url']} #{release_dir}'"
-end
-
-directory "#{release_dir}web/app/uploads" do
-  recursive true
-  action :delete
-end
-
-link "#{current_link}" do
-  to "#{release_dir}"
-end
-
-link "#{release_dir}web/app/uploads" do
-  to "#{shared_upload_dir}"
-end
-
-link "#{release_dir}.env" do
-  to "#{site_root}shared/.env"
 end
 
 execute "change-directory-permissions" do
@@ -141,14 +112,6 @@ end
 
 execute "install-composer-globally" do
   command "mv composer.phar /usr/local/bin/composer"
-end
-
-execute "run-composer" do
-  command "composer install -d #{release_dir}"
-end
-
-execute "npm-install" do
-  command "npm --prefix #{release_dir}web/app/themes/#{app['environment']['THEME_NAME']}/ install #{release_dir}web/app/themes/#{app['environment']['THEME_NAME']}/"
 end
 
 execute "npm-gulp" do
