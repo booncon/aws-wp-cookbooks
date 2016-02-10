@@ -1,8 +1,10 @@
 db = search("aws_opsworks_rds_db_instance").first
 app = search("aws_opsworks_app").first
 app_db = app['data_sources'].first
+site_root = "#{node['web_root']}#{app['environment']['THEME_NAME']}/"
+shared_env_dir = "#{site_root}shared/"
 
-envfile = "#{node['phpapp']['path']}.env"
+envfile = "#{shared_env_dir}.env"
 
 template "#{envfile}" do
   source "env.erb"
