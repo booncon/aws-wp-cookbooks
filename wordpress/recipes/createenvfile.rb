@@ -4,6 +4,14 @@ app_db = app['data_sources'].first
 site_root = "#{node['web_root']}#{app['environment']['THEME_NAME']}/"
 shared_env_dir = "#{site_root}shared/"
 
+directory "#{shared_env_dir}" do
+  owner "www-data"
+  group "www-data"
+  mode "2777"
+  action :create
+  recursive true
+end
+
 envfile = "#{shared_env_dir}.env"
 
 template "#{envfile}" do
