@@ -67,6 +67,11 @@ execute "ssh-git-clone" do
   command "ssh-agent sh -c 'ssh-add /home/#{user['username']}/.ssh/id_rsa; git clone #{app['app_source']['url']} #{release_dir}'"
 end
 
+directory "#{release_dir}web/app/uploads" do
+  recursive true
+  action :delete
+end
+
 link "#{current_link}" do
   to "#{release_dir}"
 end
