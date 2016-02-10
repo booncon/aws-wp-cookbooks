@@ -75,6 +75,10 @@ link "#{release_dir}web/app/uploads" do
   to "#{shared_upload_dir}"
 end
 
+link "#{release_dir}.env" do
+  to "#{site_root}shared/.env"
+end
+
 execute "change-directory-permissions" do
   command "find #{site_root} -type d -exec chmod 2775 {} +"
 end
