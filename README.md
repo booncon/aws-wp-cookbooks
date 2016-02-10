@@ -18,7 +18,7 @@ Recipes and lifecycle events
 
 * **Setup:** wordpress::createenvfile, wordpress::setup
 
-* **Deploy** wordpress::deploy
+* **Deploy:** wordpress::deploy
 
 
 Required Environment Variables
