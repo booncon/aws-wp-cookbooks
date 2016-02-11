@@ -70,9 +70,9 @@ execute "gulp-production" do
   only_if { File.exists?("#{theme_dir}gulpfile.js") }
 end
 
-execute "grunt-build" do
+execute "grunt-all" do
   cwd "#{theme_dir}"
-  command "grunt build"
+  command "grunt all"
   only_if { File.exists?("#{theme_dir}Gruntfile.js") }
 end
 
