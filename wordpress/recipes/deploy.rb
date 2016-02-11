@@ -70,12 +70,6 @@ execute "gulp-production" do
   only_if { File.exists?("#{theme_dir}gulpfile.js") }
 end
 
-execute "grunt-all" do
-  cwd "#{theme_dir}"
-  command "grunt all"
-  only_if { File.exists?("#{theme_dir}Gruntfile.js") }
-end
-
 execute "change-directory-permissions" do
   command "find #{release_dir} -type d -exec chmod 2775 {} +"
 end

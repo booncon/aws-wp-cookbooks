@@ -118,10 +118,6 @@ execute "npm-gulp" do
   command "npm install -g gulp"
 end
 
-execute "npm-grunt" do
-  command "npm install -g grunt-cli"
-end
-
 execute "npm-bower" do
   command "npm install -g bower"
 end
