@@ -7,7 +7,7 @@ time =  Time.new.strftime("%Y%m%d%H%M%S")
 release_dir = "#{site_root}releases/#{time}/"
 shared_upload_dir = "#{site_root}shared/web/app/uploads/"
 
-if !Dir.exists?("#{site_root}") do
+if !Dir.exists?("#{site_root}")
   apt_package "nginx-extras" do
     action :install
   end

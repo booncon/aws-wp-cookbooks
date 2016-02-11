@@ -4,7 +4,7 @@ app_db = app['data_sources'].first
 site_root = "#{node['web_root']}#{app['environment']['THEME_NAME']}/"
 shared_env_dir = "#{site_root}shared/"
 
-if !Dir.exists?("#{site_root}") do
+if !Dir.exists?("#{site_root}")
   directory "#{shared_env_dir}" do
     owner "www-data"
     group "www-data"
