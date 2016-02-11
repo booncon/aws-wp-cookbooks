@@ -119,9 +119,13 @@ execute "npm-gulp" do
 end
 
 execute "npm-grunt" do
-  command "npm install -g grunt"
+  command "npm install -g grunt-cli"
 end
 
 execute "npm-bower" do
   command "npm install -g bower"
+end
+
+link "/usr/bin/node" do
+  to "/usr/bin/nodejs"
 end

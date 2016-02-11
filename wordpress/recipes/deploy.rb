@@ -57,6 +57,24 @@ execute "npm-install" do
   command "npm --prefix #{release_dir}web/app/themes/#{app['environment']['THEME_NAME']}/ install #{release_dir}web/app/themes/#{app['environment']['THEME_NAME']}/"
 end
 
+execute "bower-install" do
+  cwd "#{theme_dir}"
+  command "bower install --allow-root"
+  only_if { File.exists?("#{theme_dir}bower.js") }
+end
+
+execute "gulp-production" do
+  cwd "#{theme_dir}"
+  command "gulp --production"
+  only_if { File.exists?("#{theme_dir}gulpfile.js") }
+end
+
+execute "grunt-build" do
+  cwd "#{theme_dir}"
+  command "grunt build"
+  only_if { File.exists?("#{theme_dir}Gruntfile.js") }
+end
+
 execute "change-directory-permissions" do
   command "find #{release_dir} -type d -exec chmod 2775 {} +"
 end
