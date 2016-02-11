@@ -6,6 +6,7 @@ current_link = "#{site_root}current"
 time =  Time.new.strftime("%Y%m%d%H%M%S")
 release_dir = "#{site_root}releases/#{time}/"
 shared_upload_dir = "#{site_root}shared/web/app/uploads/"
+theme_dir = "#{release_dir}web/app/themes/#{app['environment']['THEME_NAME']}/"
 
 count_command = "ls -l #{site_root}releases/ | grep ^d | wc -l"
 directory_count = shell_out(count_command)
