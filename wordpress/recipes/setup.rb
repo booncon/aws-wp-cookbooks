@@ -5,7 +5,8 @@ site_root = "#{node['web_root']}#{app['environment']['THEME_NAME']}/"
 current_link = "#{site_root}current"
 time =  Time.new.strftime("%Y%m%d%H%M%S")
 release_dir = "#{site_root}releases/#{time}/"
-shared_upload_dir = "#{site_root}shared/web/app/uploads/"
+shared_dir = "#{site_root}shared/"
+shared_source = "/efs/torgglercommerz/shared/"
 
 if !Dir.exists?("#{site_root}")
   apt_package "nginx-extras" do
@@ -48,12 +49,8 @@ if !Dir.exists?("#{site_root}")
     recursive true
   end
 
-  directory "#{shared_upload_dir}" do
-    owner "www-data"
-    group "www-data"
-    mode "2777"
-    action :create
-    recursive true
+  execute "symlink-shared-dir" do
+    command "ln -sf #{shared_dir} #{shared_source}"
   end
 
   execute "change-directory-permissions" do
