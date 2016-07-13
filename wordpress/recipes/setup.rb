@@ -1,5 +1,5 @@
 app = search("aws_opsworks_app").first
-user = search("aws_opsworks_user").first
+user = 'ubuntu'
 
 site_root = "#{node['web_root']}#{app['environment']['THEME_NAME']}/"
 current_link = "#{site_root}current"
@@ -32,11 +32,11 @@ if !Dir.exists?("#{site_root}")
     command "ssh-keyscan github.com >> ~/.ssh/known_hosts"
   end
 
-  file "/home/#{user['username']}/.ssh/id_rsa" do
+  file "/home/#{user}/.ssh/id_rsa" do
     content "#{app['app_source']['ssh_key']}"
-    owner "#{user['username']}"
+    owner "#{user}"
     group "opsworks"
-    mode 00600
+    mode 00400
     action [:delete, :create]
   end
 
@@ -69,7 +69,7 @@ if !Dir.exists?("#{site_root}")
   end
 
   execute "add-user-to-group" do
-    command "sudo usermod -a -G www-data #{user['username']}"
+    command "sudo usermod -a -G www-data #{user}"
   end
 
   template "/etc/nginx/nginx.conf" do
