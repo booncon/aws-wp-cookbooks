@@ -19,7 +19,7 @@ if !Dir.exists?("#{site_root}")
 
   apt_package "subversion" do
     action :install
-  end  
+  end
 
   apt_package "php7.0-fpm" do
     action :install
@@ -57,8 +57,8 @@ if !Dir.exists?("#{site_root}")
     recursive true
   end
 
-  link "#{shared_source}" do
-    to "#{shared_dir}"
+  link "#{shared_dir}" do
+    to "#{shared_source}"
   end
 
   execute "change-directory-permissions" do
