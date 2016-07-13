@@ -13,15 +13,15 @@ if !Dir.exists?("#{site_root}")
     action :install
   end
 
-  apt_package "php7-fpm" do
+  apt_package "php7.0-fpm" do
     action :install
   end
 
-  apt_package "php7-cli" do
+  apt_package "php7.0-cli" do
     action :install
   end
 
-  apt_package "php7-mysql" do
+  apt_package "php7.0-mysql" do
     action :install
   end
 
