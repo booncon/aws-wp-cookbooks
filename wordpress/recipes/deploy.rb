@@ -2,10 +2,10 @@ app = search("aws_opsworks_app").first
 user = 'ubuntu'
 
 site_root = "#{node['web_root']}#{app['environment']['THEME_NAME']}/"
+shared_dir = "/efs/#{app['environment']['THEME_NAME']}/shared/"
 current_link = "#{site_root}current"
 time =  Time.new.strftime("%Y%m%d%H%M%S")
 release_dir = "#{site_root}releases/#{time}/"
-shared_upload_dir = "#{site_root}shared/web/app/uploads/"
 theme_dir = "#{release_dir}web/app/themes/#{app['environment']['THEME_NAME']}/"
 
 count_command = "ls -l #{site_root}releases/ | grep ^d | wc -l"
@@ -26,7 +26,7 @@ directory "#{release_dir}" do
 end
 
 execute "ssh-git-clone" do
-  command "whoami; ssh-agent sh -c 'ssh-add /home/#{user}/.ssh/id_rsa; git clone #{app['app_source']['url']} #{release_dir}'"
+  command "ssh-agent sh -c 'ssh-add /home/#{user}/.ssh/id_rsa; git clone #{app['app_source']['url']} #{release_dir}'"
 end
 
 directory "#{release_dir}web/app/uploads" do
@@ -43,11 +43,11 @@ link "#{current_link}" do
 end
 
 link "#{release_dir}web/app/uploads" do
-  to "#{shared_upload_dir}"
+  to "#{shared_dir}web/app/uploads"
 end
 
 link "#{release_dir}.env" do
-  to "#{site_root}shared/.env"
+  to "#{shared_dir}.env"
 end
 
 execute "run-composer" do
