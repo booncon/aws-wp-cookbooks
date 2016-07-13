@@ -13,6 +13,14 @@ if !Dir.exists?("#{site_root}")
     action :install
   end
 
+  apt_package "zip" do
+    action :install
+  end
+
+  apt_package "subversion" do
+    action :install
+  end  
+
   apt_package "php7.0-fpm" do
     action :install
   end
@@ -49,8 +57,8 @@ if !Dir.exists?("#{site_root}")
     recursive true
   end
 
-  execute "symlink-shared-dir" do
-    command "ln -sf #{shared_dir} #{shared_source}"
+  link "#{shared_source}" do
+    to "#{shared_dir}"
   end
 
   execute "change-directory-permissions" do
