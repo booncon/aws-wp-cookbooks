@@ -29,6 +29,14 @@ if !Dir.exists?("#{site_root}")
     action :install
   end
 
+  apt_package "php7.0-xml" do
+    action :install
+  end
+
+  apt_package "php7.0-mbstring" do
+    action :install
+  end
+
   apt_package "php7.0-mysql" do
     action :install
   end
