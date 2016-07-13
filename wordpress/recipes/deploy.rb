@@ -1,5 +1,5 @@
 app = search("aws_opsworks_app").first
-user = search("aws_opsworks_user").first
+user = 'ubuntu' # search("aws_opsworks_user").first
 
 site_root = "#{node['web_root']}#{app['environment']['THEME_NAME']}/"
 current_link = "#{site_root}current"
