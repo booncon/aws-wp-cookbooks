@@ -1,5 +1,5 @@
 app = search("aws_opsworks_app").first
-user = 'ubuntu' # search("aws_opsworks_user").first
+user = 'ubuntu'
 
 site_root = "#{node['web_root']}#{app['environment']['THEME_NAME']}/"
 current_link = "#{site_root}current"
@@ -26,7 +26,7 @@ directory "#{release_dir}" do
 end
 
 execute "ssh-git-clone" do
-  command "ssh-agent sh -c 'ssh-add /home/#{user}/.ssh/id_rsa; git clone #{app['app_source']['url']} #{release_dir}'"
+  command "sudo su #{user}; ssh-agent sh -c 'ssh-add /home/#{user}/.ssh/id_rsa; git clone #{app['app_source']['url']} #{release_dir}'"
 end
 
 directory "#{release_dir}web/app/uploads" do
