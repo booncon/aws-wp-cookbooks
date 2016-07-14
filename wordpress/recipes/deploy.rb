@@ -1,8 +1,8 @@
 app = search("aws_opsworks_app").first
 user = 'ubuntu'
 
-site_root = "#{node['web_root']}#{app['environment']['THEME_NAME']}/"
-shared_dir = "/efs/#{app['environment']['THEME_NAME']}/shared/"
+site_root = "#{node['web_root']}#{app['app_source']['name']}/"
+shared_dir = "/efs/#{app['app_source']['name']}/shared/"
 current_link = "#{site_root}current"
 time =  Time.new.strftime("%Y%m%d%H%M%S")
 release_dir = "#{site_root}releases/#{time}/"
@@ -32,14 +32,6 @@ end
 directory "#{release_dir}web/app/uploads" do
   recursive true
   action :delete
-end
-
-link "#{current_link}" do
-  action :delete
-end
-
-link "#{current_link}" do
-  to "#{release_dir}"
 end
 
 link "#{release_dir}web/app/uploads" do
@@ -80,4 +72,12 @@ end
 
 execute "change-ownership" do
   command "chown -R www-data:www-data #{release_dir}"
+end
+
+link "#{current_link}" do
+  action :delete
+end
+
+link "#{current_link}" do
+  to "#{release_dir}"
 end
