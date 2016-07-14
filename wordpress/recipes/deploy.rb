@@ -1,90 +1,97 @@
-app = search("aws_opsworks_app").first
 user = 'ubuntu'
 
-Chef::Log.info("********** The app's short name is '#{app['shortname']}' **********")
-Chef::Log.info("********** The app should be deployed: '#{app['deploy']}' **********")
+search("aws_opsworks_app").each do |app|
 
-command = search("aws_opsworks_command").first
-Chef::Log.info("********** The command's type is '#{command['type']}' **********")
-Chef::Log.info("********** The command was sent with the following args '#{command['arg']}' **********")
+  Chef::Log.info("********** The app's short name is '#{app['shortname']}' **********")
+  Chef::Log.info("********** The app should be deployed: '#{app['deploy']}' **********")
 
-site_root = "#{node['web_root']}#{app['name']}/"
-shared_dir = "/efs/#{app['name']}/shared/"
-current_link = "#{site_root}current"
-time =  Time.new.strftime("%Y%m%d%H%M%S")
-release_dir = "#{site_root}releases/#{time}/"
-theme_dir = "#{release_dir}web/app/themes/#{app['environment']['THEME_NAME']}/"
+  command = search("aws_opsworks_command").first
+  Chef::Log.info("********** The command's type is '#{command['type']}' **********")
+  Chef::Log.info("********** The command was sent with the following args '#{command['arg']}' **********")
 
-count_command = "ls -l #{site_root}releases/ | grep ^d | wc -l"
-directory_count = shell_out(count_command)
+  if app['deploy'] do
 
-if directory_count.stdout.to_i > 4
-  execute "delete-oldest-release" do
-    command "find #{site_root}releases/* -maxdepth 0 -type d -print | sort | head -n 1 | xargs rm -rf"
-  end
-end
+    site_root = "#{node['web_root']}#{app['shortname']}/"
+    shared_dir = "/efs/#{app['shortname']}/shared/"
+    current_link = "#{site_root}current"
+    time =  Time.new.strftime("%Y%m%d%H%M%S")
+    release_dir = "#{site_root}releases/#{time}/"
+    theme_dir = "#{release_dir}web/app/themes/#{app['environment']['THEME_NAME']}/"
 
-directory "#{release_dir}" do
-  owner "www-data"
-  group "www-data"
-  mode "2775"
-  action :create
-  recursive true
-end
+    count_command = "ls -l #{site_root}releases/ | grep ^d | wc -l"
+    directory_count = shell_out(count_command)
 
-execute "ssh-git-clone" do
-  command "ssh-agent sh -c 'ssh-add /home/#{user}/.ssh/id_rsa; git clone -b #{app['app_source']['revision']} --single-branch #{app['app_source']['url']} #{release_dir}'"
-end
+    if directory_count.stdout.to_i > 4
+      execute "delete-oldest-release" do
+        command "find #{site_root}releases/* -maxdepth 0 -type d -print | sort | head -n 1 | xargs rm -rf"
+      end
+    end
 
-directory "#{release_dir}web/app/uploads" do
-  recursive true
-  action :delete
-end
+    directory "#{release_dir}" do
+      owner "www-data"
+      group "www-data"
+      mode "2775"
+      action :create
+      recursive true
+    end
 
-link "#{release_dir}web/app/uploads" do
-  to "#{shared_dir}web/app/uploads"
-end
+    execute "ssh-git-clone" do
+      command "ssh-agent sh -c 'ssh-add /home/#{user}/.ssh/id_rsa; git clone -b #{app['app_source']['revision']} --single-branch #{app['app_source']['url']} #{release_dir}'"
+    end
 
-link "#{release_dir}.env" do
-  to "#{shared_dir}.env"
-end
+    directory "#{release_dir}web/app/uploads" do
+      recursive true
+      action :delete
+    end
 
-execute "run-composer" do
-  command "composer install -d #{release_dir}"
-end
+    link "#{release_dir}web/app/uploads" do
+      to "#{shared_dir}web/app/uploads"
+    end
 
-execute "npm-install" do
-  command "npm --prefix #{release_dir}web/app/themes/#{app['environment']['THEME_NAME']}/ install #{release_dir}web/app/themes/#{app['environment']['THEME_NAME']}/"
-end
+    link "#{release_dir}.env" do
+      to "#{shared_dir}.env"
+    end
 
-execute "bower-install" do
-  cwd "#{theme_dir}"
-  command "bower install --allow-root"
-  only_if { File.exists?("#{theme_dir}bower.js") }
-end
+    execute "run-composer" do
+      command "composer install -d #{release_dir}"
+    end
 
-execute "gulp-production" do
-  cwd "#{theme_dir}"
-  command "gulp --production"
-  only_if { File.exists?("#{theme_dir}gulpfile.js") }
-end
+    execute "npm-install" do
+      command "npm --prefix #{release_dir}web/app/themes/#{app['environment']['THEME_NAME']}/ install #{release_dir}web/app/themes/#{app['environment']['THEME_NAME']}/"
+    end
 
-execute "change-directory-permissions" do
-  command "find #{release_dir} -type d -exec chmod 2775 {} +"
-end
+    execute "bower-install" do
+      cwd "#{theme_dir}"
+      command "bower install --allow-root"
+      only_if { File.exists?("#{theme_dir}bower.js") }
+    end
 
-execute "change-file-permissions" do
-  command "find #{release_dir} -type f -exec chmod 0664 {} +"
-end
+    execute "gulp-production" do
+      cwd "#{theme_dir}"
+      command "gulp --production"
+      only_if { File.exists?("#{theme_dir}gulpfile.js") }
+    end
 
-execute "change-ownership" do
-  command "chown -R www-data:www-data #{release_dir}"
-end
+    execute "change-directory-permissions" do
+      command "find #{release_dir} -type d -exec chmod 2775 {} +"
+    end
 
-link "#{current_link}" do
-  action :delete
-end
+    execute "change-file-permissions" do
+      command "find #{release_dir} -type f -exec chmod 0664 {} +"
+    end
 
-link "#{current_link}" do
-  to "#{release_dir}"
+    execute "change-ownership" do
+      command "chown -R www-data:www-data #{release_dir}"
+    end
+
+    link "#{current_link}" do
+      action :delete
+    end
+
+    link "#{current_link}" do
+      to "#{release_dir}"
+    end
+
+  end  
+
 end
