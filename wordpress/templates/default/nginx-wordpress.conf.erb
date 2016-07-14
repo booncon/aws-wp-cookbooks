@@ -1,16 +1,10 @@
 server {
-  listen 8080;
-  index index.php index.htm index.html;
-  root /var/www/healthcheck;
-}
-
-server {
   listen 80 default_server;
   listen [::]:80 default_server;
 
   root   <%= @web_root %>;
 
-  server_name <%= @domains %>;
+  server_name <%= @domains.join(" ") %>;
 
   access_log  /var/log/nginx/$server_name.access.log;
   error_log   /var/log/nginx/$server_name.error.log;

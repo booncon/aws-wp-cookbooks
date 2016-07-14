@@ -1,10 +1,13 @@
 user = 'ubuntu'
 
-site_root = "#{node['web_root']}#{app['environment']['THEME_NAME']}/"
-shared_dir = "#{site_root}shared/"
-shared_source = "/efs/torgglercommerz/shared/"
+healthcheck_root = "#{node['web_root']}healthcheck/"
 
-if !Dir.exists?("#{site_root}")
+if !Dir.exists?("#{healthcheck_root}")
+
+  execute "add-user-to-group" do
+    command "sudo usermod -a -G www-data #{user}"
+  end
+
   apt_package "nginx-extras" do
     action :install
   end
@@ -45,29 +48,6 @@ if !Dir.exists?("#{site_root}")
     command "ssh-keyscan github.com >> ~/.ssh/known_hosts"
   end
 
-  execute "add-user-to-group" do
-    command "sudo usermod -a -G www-data #{user}"
-  end
-
-  template "/etc/nginx/nginx.conf" do
-    source "nginx.conf.erb"
-    owner "root"
-    group "www-data"
-    mode "640"
-    notifies :run, "execute[reload-nginx]"
-  end
-
-  file "/etc/nginx/sites-enabled/default" do
-    action :delete
-    only_if "test -f /etc/nginx/sites-enabled/default"
-    notifies :run, "execute[reload-nginx]"
-  end
-
-  execute "reload-nginx" do
-    command "nginx -t && service nginx reload"
-    action :nothing
-  end
-
   execute "install-composer" do
     command "curl -sS https://getcomposer.org/installer | php"
   end
@@ -87,4 +67,54 @@ if !Dir.exists?("#{site_root}")
   link "/usr/bin/node" do
     to "/usr/bin/nodejs"
   end
+
+  template "/etc/nginx/nginx.conf" do
+    source "nginx.conf.erb"
+    owner "root"
+    group "www-data"
+    mode "640"
+    notifies :run, "execute[reload-nginx]"
+  end
+
+  file "/etc/nginx/sites-enabled/default" do
+    action :delete
+    only_if "test -f /etc/nginx/sites-enabled/default"
+    notifies :run, "execute[reload-nginx]"
+  end
+
+  template "/etc/nginx/sites-available/nginx-healthcheck.conf" do
+    source "nginx-healthcheck.conf.erb"
+    owner "root"
+    group "www-data"
+    mode "640"
+    notifies :run, "execute[reload-nginx]"
+    variables(
+      :web_root => "#{site_root}/healthcheck"
+    )
+  end
+
+  link "/etc/nginx/sites-enabled/nginx-healthcheck.conf" do
+    to "/etc/nginx/sites-available/nginx-healthcheck.conf"
+  end
+
+  directory "#{healthcheck_root}" do
+    owner "www-data"
+    group "www-data"
+    mode "2775"
+    action :create
+    recursive true
+  end
+
+  template "#{site_root}/healthcheck/index.html" do
+    source "healthcheck.html.erb"
+    owner "root"
+    group "www-data"
+    mode "640"
+  end
+
+  execute "reload-nginx" do
+    command "nginx -t && service nginx reload"
+    action :nothing
+  end
+
 end
