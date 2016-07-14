@@ -75,7 +75,7 @@ if !Dir.exists?("#{healthcheck_root}")
     recursive true
   end
 
-  template "#{site_root}/healthcheck/index.html" do
+  template "#{healthcheck_root}/index.html" do
     source "healthcheck.html.erb"
     owner "root"
     group "www-data"
