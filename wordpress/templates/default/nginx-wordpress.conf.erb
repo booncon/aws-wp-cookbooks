@@ -4,7 +4,7 @@ server {
 
   root   <%= @web_root %>;
 
-  server_name <%= @domains.join(" ") %>;
+  server_name <%= @domains %>;
 
   access_log  /var/log/nginx/$server_name.access.log;
   error_log   /var/log/nginx/$server_name.error.log;
