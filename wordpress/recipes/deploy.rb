@@ -1,8 +1,8 @@
 app = search("aws_opsworks_app").first
 user = 'ubuntu'
 
-site_root = "#{node['web_root']}#{app['app_source']['name']}/"
-shared_dir = "/efs/#{app['app_source']['name']}/shared/"
+site_root = "#{node['web_root']}#{app['name']}/"
+shared_dir = "/efs/#{app['name']}/shared/"
 current_link = "#{site_root}current"
 time =  Time.new.strftime("%Y%m%d%H%M%S")
 release_dir = "#{site_root}releases/#{time}/"
