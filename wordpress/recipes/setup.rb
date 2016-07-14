@@ -1,6 +1,5 @@
 user = 'ubuntu'
-
-healthcheck_root = "#{node['web_root']}healthcheck/"
+healthcheck_root = "/var/www/healthcheck/"
 
 if !Dir.exists?("#{healthcheck_root}")
 

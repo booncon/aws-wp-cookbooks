@@ -4,7 +4,11 @@ search("aws_opsworks_app").each do |app|
 
   if app['deploy']
 
-    site_root = "#{node['web_root']}#{app['shortname']}/"
+
+    domains = app['domains'].split(", ")
+    domains = domains.join(" ")
+
+    site_root = "/var/www/#{app['shortname']}/"
     shared_dir = "/efs/#{app['shortname']}/shared/"
     current_link = "#{site_root}current"
     time =  Time.new.strftime("%Y%m%d%H%M%S")
@@ -102,8 +106,8 @@ search("aws_opsworks_app").each do |app|
       mode "640"
       # notifies :run, "execute[reload-nginx]"
       variables(
-        :web_root => "#{site_root}/current/web",
-        :domains => "#{app['domains']}"
+        :web_root => "#{site_root}current/web",
+        :domains => ""
       )
     end
 
