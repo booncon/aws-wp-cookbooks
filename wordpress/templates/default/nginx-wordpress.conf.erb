@@ -1,13 +1,25 @@
 server {
-  listen   80;
-  server_name  _;
+  listen 8080;
+  index index.php index.htm index.html;
+  root /var/www/healthcheck;
+}
+
+server {
+  listen 80 default_server;
+  listen [::]:80 default_server;
 
   root   /var/www/<%= @web_root %>/current/web/;
 
-  access_log  /var/log/nginx/wordpress.access.log;
-  error_log   /var/log/nginx/wordpress.error.log;
+  server_name www.torggler.bz;
+
+  access_log  /var/log/nginx/$server_name.access.log;
+  error_log   /var/log/nginx/$server_name.error.log;
 
   index index.php index.htm index.html;
+
+  if ($http_x_forwarded_proto != "https") {
+    rewrite ^(.*)$ https://$server_name$1 permanent;
+  }
 
   client_max_body_size 100M;
 
@@ -36,7 +48,7 @@ server {
   }
 
   location / {
-    try_files $uri $uri/ /index.php?$args;
+   try_files $uri $uri/ /index.php$args;
   }
 
   rewrite /wp-admin$ $scheme://$host$uri/ permanent;
@@ -50,17 +62,12 @@ server {
     if (!-f $document_root$fastcgi_script_name) {
       return 404;
     }
-
-    fastcgi_pass unix:/var/run/php5-fpm.sock;
-    fastcgi_read_timeout 30;
-    include  /etc/nginx/fastcgi_params;
-    fastcgi_index index.php;
     fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
-    fastcgi_param PHP_VALUE "post_max_size=80M";
-    fastcgi_param PHP_VALUE "upload_max_filesize=80M";
-    fastcgi_param PHP_VALUE "max_input_time=120";
-    fastcgi_param PHP_VALUE "max_execution_time=120";
-
+    fastcgi_pass unix:/run/php/php7.0-fpm.sock;
+    fastcgi_read_timeout 30;
+    include snippets/fastcgi-php.conf;
+    fastcgi_param PHP_VALUE "post_max_size=80M \n upload_max_filesize=80M \n max_input_time=120 \n max_execution_time=120";
+    fastcgi_param PHP_FLAG "display_errors=on";
   }
-
+  
 }
