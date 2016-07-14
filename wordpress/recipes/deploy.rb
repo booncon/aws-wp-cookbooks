@@ -9,7 +9,7 @@ search("aws_opsworks_app").each do |app|
   Chef::Log.info("********** The command's type is '#{command['type']}' **********")
   Chef::Log.info("********** The command was sent with the following args '#{command['arg']}' **********")
 
-  if app['deploy'] do
+  if app['deploy']
 
     site_root = "#{node['web_root']}#{app['shortname']}/"
     shared_dir = "/efs/#{app['shortname']}/shared/"
@@ -92,6 +92,6 @@ search("aws_opsworks_app").each do |app|
       to "#{release_dir}"
     end
 
-  end  
+  end
 
 end
