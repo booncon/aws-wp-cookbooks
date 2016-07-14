@@ -1,6 +1,10 @@
 app = search("aws_opsworks_app").first
 user = 'ubuntu'
 
+command = search("aws_opsworks_command").first
+Chef::Log.info("********** The command's type is '#{command['type']}' **********")
+Chef::Log.info("********** The command was sent with the following args '#{command['arg']}' **********")
+
 site_root = "#{node['web_root']}#{app['name']}/"
 shared_dir = "/efs/#{app['name']}/shared/"
 current_link = "#{site_root}current"
