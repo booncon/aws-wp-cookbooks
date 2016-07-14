@@ -28,6 +28,14 @@ search("aws_opsworks_app").each do |app|
       recursive true
     end
 
+    file "/home/#{user}/.ssh/id_rsa" do
+      content "#{app['app_source']['ssh_key']}"
+      owner "#{user}"
+      group "opsworks"
+      mode 00400
+      action [:delete, :create]
+    end
+
     execute "ssh-git-clone" do
       command "ssh-agent sh -c 'ssh-add /home/#{user}/.ssh/id_rsa; git clone -b #{app['app_source']['revision']} --single-branch #{app['app_source']['url']} #{release_dir}'"
     end
@@ -85,6 +93,22 @@ search("aws_opsworks_app").each do |app|
 
     link "#{current_link}" do
       to "#{release_dir}"
+    end
+
+    template "/etc/nginx/sites-available/nginx-#{app['shortname']}.conf" do
+      source "nginx-wordpress.conf.erb"
+      owner "root"
+      group "www-data"
+      mode "640"
+      notifies :run, "execute[reload-nginx]"
+      variables(
+        :web_root => "#{site_root}/current/web",
+        :domains => "#{app['domains']}"
+      )
+    end
+
+    link "/etc/nginx/sites-enabled/nginx-#{app['shortname']}.conf" do
+      to "/etc/nginx/sites-available/nginx-#{app['shortname']}.conf"
     end
 
   end

@@ -16,7 +16,7 @@ How to use
 Recipes and lifecycle events
 ----------------------------
 
-* **Setup:** wordpress::createenvfile, wordpress::setup
+* **Setup:** wordpress::setup
 
 * **Deploy:** wordpress::deploy
 

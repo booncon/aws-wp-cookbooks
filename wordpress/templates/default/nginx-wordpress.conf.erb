@@ -8,9 +8,9 @@ server {
   listen 80 default_server;
   listen [::]:80 default_server;
 
-  root   /var/www/<%= @web_root %>/current/web/;
+  root   <%= @web_root %>;
 
-  server_name www.torggler.bz;
+  server_name <%= @domains %>;
 
   access_log  /var/log/nginx/$server_name.access.log;
   error_log   /var/log/nginx/$server_name.error.log;
@@ -69,5 +69,5 @@ server {
     fastcgi_param PHP_VALUE "post_max_size=80M \n upload_max_filesize=80M \n max_input_time=120 \n max_execution_time=120";
     fastcgi_param PHP_FLAG "display_errors=on";
   }
-  
+
 }
