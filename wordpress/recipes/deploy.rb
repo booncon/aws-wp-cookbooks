@@ -26,7 +26,7 @@ directory "#{release_dir}" do
 end
 
 execute "ssh-git-clone" do
-  command "ssh-agent sh -c 'ssh-add /home/#{user}/.ssh/id_rsa; git clone #{app['app_source']['url']} #{release_dir}'"
+  command "ssh-agent sh -c 'ssh-add /home/#{user}/.ssh/id_rsa; git clone -b #{app['app_source']['revision']} --single-branch #{app['app_source']['url']} #{release_dir}'"
 end
 
 directory "#{release_dir}web/app/uploads" do
