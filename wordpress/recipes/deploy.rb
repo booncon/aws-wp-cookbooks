@@ -7,6 +7,8 @@ search("aws_opsworks_app").each do |app|
   if app['deploy']
 
     domains = app['domains'].join(" ")
+    wp_home = "https://" + app['domains'].first
+    site_url = "https://" + app['domains'].first + "/wp"
     site_root = "/var/www/#{app['shortname']}/"
     shared_dir = "/efs/#{app['shortname']}/shared/"
     current_link = "#{site_root}current"
@@ -66,8 +68,8 @@ search("aws_opsworks_app").each do |app|
         :db_user          =>  "#{db['db_user']}",
         :db_password      =>  "#{db['db_password']}",
         :wp_env           =>  "#{app['environment']['WP_ENV']}",
-        :wp_home          =>  "#{app['environment']['WP_HOME']}",
-        :wp_siteurl       =>  "#{app['environment']['WP_SITEURL']}",
+        :wp_home          =>  "#{wp_home}",
+        :wp_siteurl       =>  "#{site_url}",
         :auth_key         =>  "#{app['environment']['AUTH_KEY']}",
         :secure_auth_key  =>  "#{app['environment']['SECURE_AUTH_KEY']}",
         :logged_in_key    =>  "#{app['environment']['LOGGED_IN_KEY']}",
