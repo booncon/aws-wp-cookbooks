@@ -41,9 +41,11 @@ search("aws_opsworks_app").each do |app|
       to "#{shared_dir}web/app/uploads"
     end
 
-    link "#{release_dir}.env" do
-      to "#{shared_dir}.env"
-    end
+    # link "#{release_dir}.env" do
+    #   to "#{shared_dir}.env"
+    # end
+
+    # todo -> set up .env
 
     execute "run-composer" do
       command "composer install -d #{release_dir}"
