@@ -3,70 +3,70 @@ healthcheck_root = "/var/www/healthcheck/"
 
 if !Dir.exists?("#{healthcheck_root}")
 
-  # execute "add-user-to-group" do
-  #   command "sudo usermod -a -G www-data #{user}"
-  # end
-  #
-  # apt_package "nginx-extras" do
-  #   action :install
-  # end
-  #
-  # apt_package "zip" do
-  #   action :install
-  # end
-  #
-  # apt_package "subversion" do
-  #   action :install
-  # end
-  #
-  # apt_package "php7.0-fpm" do
-  #   action :install
-  # end
-  #
-  # apt_package "php7.0-cli" do
-  #   action :install
-  # end
-  #
-  # apt_package "php7.0-xml" do
-  #   action :install
-  # end
-  #
-  # apt_package "php7.0-mbstring" do
-  #   action :install
-  # end
-  #
-  # apt_package "php7.0-mysql" do
-  #   action :install
-  # end
-  #
-  # apt_package "npm" do
-  #   action :install
-  # end
-  #
-  # execute "ssh-keyscan" do
-  #   command "ssh-keyscan github.com >> ~/.ssh/known_hosts"
-  # end
-  #
-  # execute "install-composer" do
-  #   command "curl -sS https://getcomposer.org/installer | php"
-  # end
-  #
-  # execute "install-composer-globally" do
-  #   command "mv composer.phar /usr/local/bin/composer"
-  # end
-  #
-  # execute "npm-gulp" do
-  #   command "npm install -g gulp"
-  # end
-  #
-  # execute "npm-bower" do
-  #   command "npm install -g bower"
-  # end
-  #
-  # link "/usr/bin/node" do
-  #   to "/usr/bin/nodejs"
-  # end
-  #
+  execute "add-user-to-group" do
+    command "sudo usermod -a -G www-data #{user}"
+  end
+
+  apt_package "nginx-extras" do
+    action :install
+  end
+
+  apt_package "zip" do
+    action :install
+  end
+
+  apt_package "subversion" do
+    action :install
+  end
+
+  apt_package "php7.0-fpm" do
+    action :install
+  end
+
+  apt_package "php7.0-cli" do
+    action :install
+  end
+
+  apt_package "php7.0-xml" do
+    action :install
+  end
+
+  apt_package "php7.0-mbstring" do
+    action :install
+  end
+
+  apt_package "php7.0-mysql" do
+    action :install
+  end
+
+  apt_package "npm" do
+    action :install
+  end
+
+  execute "ssh-keyscan" do
+    command "ssh-keyscan github.com >> ~/.ssh/known_hosts"
+  end
+
+  execute "install-composer" do
+    command "curl -sS https://getcomposer.org/installer | php"
+  end
+
+  execute "install-composer-globally" do
+    command "mv composer.phar /usr/local/bin/composer"
+  end
+
+  execute "npm-gulp" do
+    command "npm install -g gulp"
+  end
+
+  execute "npm-bower" do
+    command "npm install -g bower"
+  end
+
+  link "/usr/bin/node" do
+    to "/usr/bin/nodejs"
+  end
+
   directory "#{healthcheck_root}" do
     owner "www-data"
     group "www-data"
@@ -82,13 +82,13 @@ if !Dir.exists?("#{healthcheck_root}")
     mode "640"
   end
 
-  # template "/etc/nginx/nginx.conf" do
-  #   source "nginx.conf.erb"
-  #   owner "root"
-  #   group "www-data"
-  #   mode "640"
-  #   notifies :run, "execute[reload-nginx]"
-  # end
+  template "/etc/nginx/nginx.conf" do
+    source "nginx.conf.erb"
+    owner "root"
+    group "www-data"
+    mode "640"
+    notifies :run, "execute[reload-nginx]"
+  end
 
   file "/etc/nginx/sites-enabled/default" do
     action :delete

@@ -102,7 +102,7 @@ search("aws_opsworks_app").each do |app|
       owner "root"
       group "www-data"
       mode "640"
-      # notifies :run, "execute[reload-nginx]"
+      notifies :run, "execute[reload-nginx]"
       variables(
         :web_root => "#{site_root}current/web",
         :domains => domains
@@ -111,6 +111,11 @@ search("aws_opsworks_app").each do |app|
 
     link "/etc/nginx/sites-enabled/nginx-#{app['shortname']}.conf" do
       to "/etc/nginx/sites-available/nginx-#{app['shortname']}.conf"
+    end
+
+    execute "reload-nginx" do
+      command "nginx -t && service nginx reload"
+      action :nothing
     end
 
   end
