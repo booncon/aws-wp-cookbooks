@@ -65,10 +65,6 @@ if !Dir.exists?("#{site_root}")
     recursive true
   end
 
-  # link "#{shared_dir}" do
-  #   to "#{shared_source}"
-  # end
-
   execute "change-directory-permissions" do
     command "find #{site_root} -type d -exec chmod 2775 {} +"
   end

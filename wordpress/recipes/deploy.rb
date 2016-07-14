@@ -2,13 +2,6 @@ user = 'ubuntu'
 
 search("aws_opsworks_app").each do |app|
 
-  Chef::Log.info("********** The app's short name is '#{app['shortname']}' **********")
-  Chef::Log.info("********** The app should be deployed: '#{app['deploy']}' **********")
-
-  command = search("aws_opsworks_command").first
-  Chef::Log.info("********** The command's type is '#{command['type']}' **********")
-  Chef::Log.info("********** The command was sent with the following args '#{command['arg']}' **********")
-
   if app['deploy']
 
     site_root = "#{node['web_root']}#{app['shortname']}/"
