@@ -100,7 +100,7 @@ search("aws_opsworks_app").each do |app|
       owner "root"
       group "www-data"
       mode "640"
-      notifies :run, "execute[reload-nginx]"
+      # notifies :run, "execute[reload-nginx]"
       variables(
         :web_root => "#{site_root}/current/web",
         :domains => "#{app['domains']}"
