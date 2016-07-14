@@ -1,9 +1,10 @@
 user = 'ubuntu'
 
+db = search("aws_opsworks_rds_db_instance").first
+
 search("aws_opsworks_app").each do |app|
 
   if app['deploy']
-
 
     domains = app['domains'].join(" ")
     site_root = "/var/www/#{app['shortname']}/"
@@ -12,6 +13,7 @@ search("aws_opsworks_app").each do |app|
     time =  Time.new.strftime("%Y%m%d%H%M%S")
     release_dir = "#{site_root}releases/#{time}/"
     theme_dir = "#{release_dir}web/app/themes/#{app['environment']['THEME_NAME']}/"
+    app_db = app['data_sources'].first
 
     count_command = "ls -l #{site_root}releases/ | grep ^d | wc -l"
     directory_count = shell_out(count_command)
@@ -51,11 +53,31 @@ search("aws_opsworks_app").each do |app|
       to "#{shared_dir}web/app/uploads"
     end
 
-    # link "#{release_dir}.env" do
-    #   to "#{shared_dir}.env"
-    # end
+    template "#{release_dir}.env" do
+      source "env.erb"
+      mode "0644"
+      group "www-data"
+      owner "www-data"
+      action [:delete, :create]
 
-    # todo -> set up .env
+      variables(
+        :db_name          =>  "#{app_db['database_name']}",
+        :db_host          =>  "#{db['address']}",
+        :db_user          =>  "#{db['db_user']}",
+        :db_password      =>  "#{db['db_password']}",
+        :wp_env           =>  "#{app['environment']['WP_ENV']}",
+        :wp_home          =>  "#{app['environment']['WP_HOME']}",
+        :wp_siteurl       =>  "#{app['environment']['WP_SITEURL']}",
+        :auth_key         =>  "#{app['environment']['AUTH_KEY']}",
+        :secure_auth_key  =>  "#{app['environment']['SECURE_AUTH_KEY']}",
+        :logged_in_key    =>  "#{app['environment']['LOGGED_IN_KEY']}",
+        :nonce_key        =>  "#{app['environment']['NONCE_KEY']}",
+        :auth_salt        =>  "#{app['environment']['AUTH_SALT']}",
+        :secure_auth_salt =>  "#{app['environment']['SECURE_AUTH_SALT']}",
+        :logged_in_salt   =>  "#{app['environment']['LOGGED_IN_SALT']}",
+        :nonce_salt       =>  "#{app['environment']['NONCE_SALT']}"
+      )
+    end
 
     execute "run-composer" do
       command "composer install -d #{release_dir}"
@@ -89,14 +111,6 @@ search("aws_opsworks_app").each do |app|
       command "chown -R www-data:www-data #{release_dir}"
     end
 
-    link "#{current_link}" do
-      action :delete
-    end
-
-    link "#{current_link}" do
-      to "#{release_dir}"
-    end
-
     template "/etc/nginx/sites-available/nginx-#{app['shortname']}.conf" do
       source "nginx-wordpress.conf.erb"
       owner "root"
@@ -116,6 +130,16 @@ search("aws_opsworks_app").each do |app|
     execute "reload-nginx-php" do
       command "nginx -t && service nginx reload && service php7.0-fpm restart"
       action :nothing
+    end
+
+    # need to set up cron(s)?
+
+    link "#{current_link}" do
+      action :delete
+    end
+
+    link "#{current_link}" do
+      to "#{release_dir}"
     end
 
   end

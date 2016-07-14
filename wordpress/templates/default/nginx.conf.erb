@@ -1,5 +1,5 @@
 user www-data;
-worker_processes 1;
+worker_processes 3;
 pid /var/run/nginx.pid;
 worker_rlimit_nofile 8192;
 
@@ -10,7 +10,7 @@ events {
 
 http {
   upstream phpcgi {
-    server unix:/var/run/php5-fpm.sock;
+    server unix:/run/php7.0-fpm.sock;
     keepalive 15;
   }
 
