@@ -67,6 +67,21 @@ if !Dir.exists?("#{healthcheck_root}")
   #   to "/usr/bin/nodejs"
   # end
   #
+  directory "#{healthcheck_root}" do
+    owner "www-data"
+    group "www-data"
+    mode "2775"
+    action :create
+    recursive true
+  end
+
+  template "#{site_root}/healthcheck/index.html" do
+    source "healthcheck.html.erb"
+    owner "root"
+    group "www-data"
+    mode "640"
+  end
+
   # template "/etc/nginx/nginx.conf" do
   #   source "nginx.conf.erb"
   #   owner "root"
@@ -88,27 +103,12 @@ if !Dir.exists?("#{healthcheck_root}")
     mode "640"
     notifies :run, "execute[reload-nginx]"
     variables(
-      :web_root => "#{site_root}/healthcheck"
+      :web_root => "#{healthcheck_root}"
     )
   end
 
   link "/etc/nginx/sites-enabled/nginx-healthcheck.conf" do
     to "/etc/nginx/sites-available/nginx-healthcheck.conf"
-  end
-
-  directory "#{healthcheck_root}" do
-    owner "www-data"
-    group "www-data"
-    mode "2775"
-    action :create
-    recursive true
-  end
-
-  template "#{site_root}/healthcheck/index.html" do
-    source "healthcheck.html.erb"
-    owner "root"
-    group "www-data"
-    mode "640"
   end
 
   execute "reload-nginx" do
