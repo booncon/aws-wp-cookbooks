@@ -1,0 +1,7 @@
+name             "efs"
+maintainer       "booncon PIXELS"
+maintainer_email "hello@pixels.fi"
+license          "All rights reserved"
+description      "Mount EFS"
+long_description "Mount EFS"
+version          "0.8.0"
