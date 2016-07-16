@@ -11,7 +11,7 @@ if !Dir.exists?("#{efs_root}")
     recursive true
   end
 
-  execute "mount-efs"
+  execute "mount-efs" do
     command "sudo mount -t nfs4 -o nfsvers=4.1 $(curl -s #{node['efs_mount']}:/ efs"
   end
 
