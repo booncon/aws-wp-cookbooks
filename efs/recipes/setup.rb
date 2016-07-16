@@ -3,7 +3,7 @@ efs_root = "/efs"
 if !Dir.exists?("#{efs_root}")
 
   execute "install-nfs-common" do
-    command "sudo apt-get install nfs-common"
+    command "apt-get install nfs-common"
   end
 
   directory "#{efs_root}" do
