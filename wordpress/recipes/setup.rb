@@ -19,23 +19,23 @@ if !Dir.exists?("#{healthcheck_root}")
     action :install
   end
 
-  apt_package "php7.0-fpm" do
+  apt_package "php-fpm" do
     action :install
   end
 
-  apt_package "php7.0-cli" do
+  apt_package "php-cli" do
     action :install
   end
 
-  apt_package "php7.0-xml" do
+  apt_package "php-xml" do
     action :install
   end
 
-  apt_package "php7.0-mbstring" do
+  apt_package "php-mbstring" do
     action :install
   end
 
-  apt_package "php7.0-mysql" do
+  apt_package "php-mysql" do
     action :install
   end
 
