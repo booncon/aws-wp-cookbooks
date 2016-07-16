@@ -121,7 +121,8 @@ search("aws_opsworks_app").each do |app|
       notifies :run, "execute[reload-nginx-php]"
       variables(
         :web_root => "#{site_root}current/web",
-        :domains => domains
+        :domains => domains,
+        :app_name => app['shortname']
       )
     end
 
