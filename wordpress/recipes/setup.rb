@@ -39,6 +39,18 @@ if !Dir.exists?("#{healthcheck_root}")
     action :install
   end
 
+  apt_package "php-soap" do
+    action :install
+  end
+
+  apt_package "php-curl" do
+    action :install
+  end
+
+  apt_package "php-apcu" do
+    action :install
+  end
+
   apt_package "npm" do
     action :install
   end

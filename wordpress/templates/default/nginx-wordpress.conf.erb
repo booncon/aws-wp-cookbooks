@@ -63,7 +63,7 @@ server {
     fastcgi_pass unix:/run/php/php7.0-fpm.sock;
     fastcgi_read_timeout 30;
     include snippets/fastcgi-php.conf;
-    fastcgi_param PHP_VALUE "post_max_size=80M \n upload_max_filesize=80M \n max_input_time=120 \n max_execution_time=120";
+    fastcgi_param PHP_VALUE "post_max_size=80M \n upload_max_filesize=80M \n max_input_time=120 \n max_execution_time=120 \n max_input_vars=10000";
     fastcgi_param PHP_FLAG "display_errors=on";
   }
 
