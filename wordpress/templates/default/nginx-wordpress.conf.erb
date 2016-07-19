@@ -9,15 +9,13 @@ server {
   error_log   /var/log/nginx/<%= @app_name %>.error.log;
 
   index index.php index.htm index.html;
-
   <% if @enable_ssl -%>
 
-    if ($http_x_forwarded_proto != "https") {
-      rewrite ^(.*)$ https://$server_name$1 permanent;
-    }
+  if ($http_x_forwarded_proto != "https") {
+    rewrite ^(.*)$ https://$server_name$1 permanent;
+  }
 
   <% end -%>
-
   client_max_body_size 100M;
 
   client_body_timeout             5s;
