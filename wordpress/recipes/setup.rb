@@ -124,8 +124,8 @@ if !Dir.exists?("#{healthcheck_root}")
     to "/etc/nginx/sites-available/nginx-healthcheck.conf"
   end
 
-  execute "reload-nginx" do
-    command "nginx -t && service nginx reload"
+  execute "restart-nginx" do
+    command "nginx -t && service nginx restart"
     action :nothing
   end
 
