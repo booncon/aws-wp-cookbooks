@@ -99,14 +99,13 @@ if !Dir.exists?("#{healthcheck_root}")
     owner "root"
     group "www-data"
     mode "640"
-    notifies :run, "execute[reload-nginx]"
+    notifies :run, "execute[restart-nginx]"
   end
 
   file "/etc/nginx/sites-enabled/default" do
     action :delete
     manage_symlink_source true
     only_if "test -f /etc/nginx/sites-enabled/default"
-    notifies :run, "execute[reload-nginx]"
   end
 
   template "/etc/nginx/sites-available/nginx-healthcheck.conf" do
