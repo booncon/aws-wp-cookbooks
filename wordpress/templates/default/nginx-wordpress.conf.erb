@@ -10,9 +10,13 @@ server {
 
   index index.php index.htm index.html;
 
-  if ($http_x_forwarded_proto != "https") {
-    rewrite ^(.*)$ https://$server_name$1 permanent;
-  }
+  <% if @enable_ssl -%>
+
+    if ($http_x_forwarded_proto != "https") {
+      rewrite ^(.*)$ https://$server_name$1 permanent;
+    }
+
+  <% end -%>
 
   client_max_body_size 100M;
 

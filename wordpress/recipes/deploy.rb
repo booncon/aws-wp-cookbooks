@@ -7,8 +7,9 @@ search("aws_opsworks_app").each do |app|
   if app['deploy']
 
     domains = app['domains'].join(" ")
-    wp_home = "https://" + app['domains'].first
-    site_url = "https://" + app['domains'].first + "/wp"
+    protocol = app['enable_ssl'] ? ('https') : ('http');
+    wp_home =  "#{protocol}://#{app['domains'].first}";
+    site_url = "#{wp_home}/wp"
     site_root = "/var/www/#{app['shortname']}/"
     shared_dir = "/efs/#{app['shortname']}/shared/"
     current_link = "#{site_root}current"
@@ -118,11 +119,12 @@ search("aws_opsworks_app").each do |app|
       owner "root"
       group "www-data"
       mode "640"
-      notifies :run, "execute[reload-nginx-php]"
+      notifies :run, "execute[check-nginx]"
       variables(
         :web_root => "#{site_root}current/web",
         :domains => domains,
-        :app_name => app['shortname']
+        :app_name => app['shortname'],
+        :enable_ssl => app['enable_ssl']
       )
     end
 
@@ -130,12 +132,10 @@ search("aws_opsworks_app").each do |app|
       to "/etc/nginx/sites-available/nginx-#{app['shortname']}.conf"
     end
 
-    execute "reload-nginx-php" do
-      command "nginx -t && service nginx reload && service php7.0-fpm restart"
+    execute "check-nginx" do
+      command "nginx -t"
       action :nothing
     end
-
-    # need to set up cron(s)?
 
     link "#{current_link}" do
       action :delete
@@ -143,6 +143,12 @@ search("aws_opsworks_app").each do |app|
 
     link "#{current_link}" do
       to "#{release_dir}"
+      notifies :run, "execute[reload-nginx-php]"
+    end
+
+    execute "reload-nginx-php" do
+      command "nginx -t && service nginx reload && service php7.0-fpm restart"
+      action :nothing
     end
 
   end

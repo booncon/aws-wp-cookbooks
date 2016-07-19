@@ -104,7 +104,7 @@ if !Dir.exists?("#{healthcheck_root}")
 
   file "/etc/nginx/sites-enabled/default" do
     action :delete
-    manage_symlink_source :true
+    manage_symlink_source true
     only_if "test -f /etc/nginx/sites-enabled/default"
     notifies :run, "execute[reload-nginx]"
   end
