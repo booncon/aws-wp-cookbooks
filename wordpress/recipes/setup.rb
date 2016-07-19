@@ -114,7 +114,7 @@ if !Dir.exists?("#{healthcheck_root}")
     owner "root"
     group "www-data"
     mode "640"
-    notifies :run, "execute[reload-nginx]"
+    notifies :run, "execute[restart-nginx]"
     variables(
       :web_root => "#{healthcheck_root}"
     )
