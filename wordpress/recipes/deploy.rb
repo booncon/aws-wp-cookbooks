@@ -90,16 +90,16 @@ search("aws_opsworks_app").each do |app|
       command "npm --prefix #{release_dir}web/app/themes/#{app['environment']['THEME_NAME']}/ install #{release_dir}web/app/themes/#{app['environment']['THEME_NAME']}/"
     end
 
-    execute "bower-install" do
+    execute "theme-build" do
       cwd "#{theme_dir}"
-      command "bower install --allow-root"
+      command "npm run build:production"
       only_if { File.exists?("#{theme_dir}bower.js") }
     end
 
-    execute "gulp-production" do
+    execute "theme-build-composer" do
       cwd "#{theme_dir}"
-      command "gulp --production"
-      only_if { File.exists?("#{theme_dir}gulpfile.js") }
+      command "composer update"
+      only_if { File.exists?("#{theme_dir}composer.json") }
     end
 
     execute "change-directory-permissions" do

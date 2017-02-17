@@ -19,6 +19,10 @@ if !Dir.exists?("#{healthcheck_root}")
     action :install
   end
 
+  apt_package "htop" do
+    action :install
+  end
+
   apt_package "php-fpm" do
     action :install
   end
@@ -67,12 +71,24 @@ if !Dir.exists?("#{healthcheck_root}")
     command "mv composer.phar /usr/local/bin/composer"
   end
 
+  execute "install-wpcli" do
+    command "curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar"
+  end
+
+  execute "install-wpcli-globally" do
+    command "chmod +x wp-cli.phar; mv wp-cli.phar /usr/local/bin/wp"
+  end
+
   execute "npm-gulp" do
     command "npm install -g gulp"
   end
 
   execute "npm-bower" do
     command "npm install -g bower"
+  end
+
+  execute "npm-webpack" do
+    command "npm install -g webpack"
   end
 
   link "/usr/bin/node" do
