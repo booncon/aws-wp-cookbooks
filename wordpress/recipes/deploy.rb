@@ -93,7 +93,7 @@ search("aws_opsworks_app").each do |app|
     execute "theme-build" do
       cwd "#{theme_dir}"
       command "npm run build:production"
-      only_if { File.exists?("#{theme_dir}bower.js") }
+      only_if { File.exists?("#{theme_dir}package.json") }
     end
 
     execute "theme-build-composer" do
