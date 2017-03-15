@@ -21,7 +21,7 @@ search("aws_opsworks_app").each do |app|
     count_command = "ls -l #{site_root}releases/ | grep ^d | wc -l"
     directory_count = shell_out(count_command)
 
-    if directory_count.stdout.to_i > 4
+    if directory_count.stdout.to_i > 3
       execute "delete-oldest-release" do
         command "find #{site_root}releases/* -maxdepth 0 -type d -print | sort | head -n 1 | xargs rm -rf"
       end
