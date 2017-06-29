@@ -78,6 +78,10 @@ if !Dir.exists?("#{healthcheck_root}")
   execute "install-wpcli-globally" do
     command "chmod +x wp-cli.phar; mv wp-cli.phar /usr/local/bin/wp"
   end
+  
+  link "/usr/bin/node" do
+    to "/usr/bin/nodejs"
+  end
 
   execute "npm-gulp" do
     command "npm install -g gulp"
@@ -89,10 +93,6 @@ if !Dir.exists?("#{healthcheck_root}")
 
   execute "npm-webpack" do
     command "npm install -g webpack"
-  end
-
-  link "/usr/bin/node" do
-    to "/usr/bin/nodejs"
   end
 
   directory "#{healthcheck_root}" do
