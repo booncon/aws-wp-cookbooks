@@ -12,7 +12,7 @@ if !Dir.exists?("#{efs_root}")
   end
 
   execute "mount-efs" do
-    command "sudo mount -t nfs4 -o nfsvers=4.1 $(curl -s #{node['efs_mount']}:/ efs"
-  end  
+    command "sudo mount -t nfs4 -o nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2 $(curl -s #{node['efs_mount']}:/ /efs"
+  end
 
 end
