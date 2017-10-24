@@ -125,7 +125,7 @@ search("aws_opsworks_app").each do |app|
         :domains => domains,
         :app_name => app['shortname'],
         :enable_ssl => app['enable_ssl'],
-        :php_timeout => app['php_timeout']
+        :php_timeout => node['php_timeout']
       )
     end
 
