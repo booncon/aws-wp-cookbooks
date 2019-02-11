@@ -74,6 +74,8 @@ search("aws_opsworks_app").each do |app|
         :nav_apiurl       =>  "#{app['environment']['NAV_APIURL']}",
         :nav_user         =>  "#{app['environment']['NAV_USER']}",
         :nav_password     =>  "#{app['environment']['NAV_PASSWORD']}",
+        :torggler_es_host =>  "#{app['environment']['TORGGLER_ES_HOST']}",
+        :torggler_es_index => "#{app['environment']['TORGGLER_ES_INDEX']}",
         :auth_key         =>  "#{app['environment']['AUTH_KEY']}",
         :secure_auth_key  =>  "#{app['environment']['SECURE_AUTH_KEY']}",
         :logged_in_key    =>  "#{app['environment']['LOGGED_IN_KEY']}",
