@@ -62,7 +62,7 @@ server {
       return 404;
     }
     fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
-    fastcgi_pass unix:/run/php/php7.0-fpm.sock;
+    fastcgi_pass unix:/run/php/php7.2-fpm.sock;
     fastcgi_read_timeout <%= @php_timeout %>;
     include snippets/fastcgi-php.conf;
     fastcgi_param PHP_VALUE "post_max_size=80M \n upload_max_filesize=80M \n max_input_time=<%= @php_timeout %> \n max_execution_time=<%= @php_timeout %> \n max_input_vars=10000";

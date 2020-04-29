@@ -153,7 +153,7 @@ search("aws_opsworks_app").each do |app|
     end
 
     execute "reload-nginx-php" do
-      command "nginx -t && service nginx reload && service php7.0-fpm restart"
+      command "nginx -t && service nginx reload && service php7.2-fpm restart"
       action :nothing
     end
 
