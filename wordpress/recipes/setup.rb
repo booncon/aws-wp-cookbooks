@@ -63,6 +63,10 @@ if !Dir.exists?("#{healthcheck_root}")
     action :install
   end
 
+  apt_package "php-zip" do
+    action :install
+  end
+
   apt_package "npm" do
     action :install
   end
