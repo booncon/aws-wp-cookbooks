@@ -100,7 +100,7 @@ if !Dir.exists?("#{healthcheck_root}")
   end
 
   execute "npm-webpack" do
-    command "npm install -g webpack"
+    command "npm install -g webpack@4"
   end
 
   directory "#{healthcheck_root}" do
