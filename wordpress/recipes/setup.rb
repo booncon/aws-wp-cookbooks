@@ -72,7 +72,7 @@ if !Dir.exists?("#{healthcheck_root}")
   end
 
   execute "install-composer" do
-    command "curl -sS https://getcomposer.org/installer | php"
+    command "curl -sS https://getcomposer.org/installer --output composer-setup.php && php composer-setup.php --1 && rm composer-setup.php"
   end
 
   execute "install-composer-globally" do
