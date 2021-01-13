@@ -98,7 +98,7 @@ search("aws_opsworks_app").each do |app|
     end
 
     execute "change-ownership" do
-      command "chown -R www-data:www-data #{release_dir}"
+      command "chown -R #{user}:www-data #{theme_dir}"
     end
 
     execute "npm-install" do
@@ -112,11 +112,15 @@ search("aws_opsworks_app").each do |app|
     end
 
     execute "theme-build" do
-      user "www-data"
+      user "#{user}"
       group "www-data"
       cwd "#{theme_dir}"
       command "npm run build:production"
       only_if { File.exists?("#{theme_dir}package.json") }
+    end
+
+    execute "change-ownership" do
+      command "chown -R www-data:www-data #{release_dir}"
     end
 
     execute "change-directory-permissions" do
