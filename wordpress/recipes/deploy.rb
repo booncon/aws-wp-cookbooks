@@ -91,16 +91,6 @@ search("aws_opsworks_app").each do |app|
       command "composer install -d #{release_dir}"
     end
 
-    execute "npm-install" do
-      command "npm --prefix #{release_dir}web/app/themes/#{app['environment']['THEME_NAME']}/ install #{release_dir}web/app/themes/#{app['environment']['THEME_NAME']}/"
-    end
-
-    execute "theme-build" do
-      cwd "#{theme_dir}"
-      command "npm run build:production"
-      only_if { File.exists?("#{theme_dir}package.json") }
-    end
-
     execute "theme-build-composer" do
       cwd "#{theme_dir}"
       command "composer update"
@@ -117,6 +107,20 @@ search("aws_opsworks_app").each do |app|
 
     execute "change-ownership" do
       command "chown -R www-data:www-data #{release_dir}"
+    end
+
+    execute "npm-install" do
+      user "www-data"
+      group "www-data"
+      command "npm --prefix #{release_dir}web/app/themes/#{app['environment']['THEME_NAME']}/ install #{release_dir}web/app/themes/#{app['environment']['THEME_NAME']}/"
+    end
+
+    execute "theme-build" do
+      user "www-data"
+      group "www-data"
+      cwd "#{theme_dir}"
+      command "npm run build:production"
+      only_if { File.exists?("#{theme_dir}package.json") }
     end
 
     template "/etc/nginx/sites-available/nginx-#{app['shortname']}.conf" do
