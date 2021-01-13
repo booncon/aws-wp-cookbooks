@@ -97,21 +97,17 @@ search("aws_opsworks_app").each do |app|
       only_if { File.exists?("#{theme_dir}composer.json") }
     end
 
-    execute "change-directory-permissions" do
-      command "find #{release_dir} -type d -exec chmod 2775 {} +"
-    end
-
-    execute "change-file-permissions" do
-      command "find #{release_dir} -type f -exec chmod 0664 {} +"
-    end
-
     execute "change-ownership" do
       command "chown -R www-data:www-data #{release_dir}"
     end
 
     execute "npm-install" do
-      user "www-data"
+      user "#{user}"
       group "www-data"
+      environment ({
+        'HOME' => "/home/#{user}",
+        'USER' => "#{user}"
+      })
       command "npm --prefix #{release_dir}web/app/themes/#{app['environment']['THEME_NAME']}/ install #{release_dir}web/app/themes/#{app['environment']['THEME_NAME']}/"
     end
 
@@ -121,6 +117,14 @@ search("aws_opsworks_app").each do |app|
       cwd "#{theme_dir}"
       command "npm run build:production"
       only_if { File.exists?("#{theme_dir}package.json") }
+    end
+
+    execute "change-directory-permissions" do
+      command "find #{release_dir} -type d -exec chmod 2775 {} +"
+    end
+
+    execute "change-file-permissions" do
+      command "find #{release_dir} -type f -exec chmod 0664 {} +"
     end
 
     template "/etc/nginx/sites-available/nginx-#{app['shortname']}.conf" do
