@@ -63,8 +63,12 @@ if !Dir.exists?("#{healthcheck_root}")
     action :install
   end
 
+  apt_package "npm" do
+    action :install
+  end
+
   execute "update-node" do
-    command "sudo npm install -g n && sudo n 10"
+    command "sudo npm install -g n && sudo n 10 && hash -d npm"
   end
 
   execute "ssh-keyscan" do
