@@ -115,6 +115,10 @@ search("aws_opsworks_app").each do |app|
       user "#{user}"
       group "www-data"
       cwd "#{theme_dir}"
+      environment ({
+        'HOME' => "/home/#{user}",
+        'USER' => "#{user}"
+      })
       command "npm run build:production"
       only_if { File.exists?("#{theme_dir}package.json") }
     end
