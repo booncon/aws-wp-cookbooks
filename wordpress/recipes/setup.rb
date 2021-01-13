@@ -63,7 +63,9 @@ if !Dir.exists?("#{healthcheck_root}")
     action :install
   end
 
-  apt_package "npm" do
+  snap_package "node" do
+    channel "10/stable"
+    options "--classic"
     action :install
   end
 
