@@ -68,7 +68,7 @@ if !Dir.exists?("#{healthcheck_root}")
   end
 
   execute "update-node" do
-    command "sudo npm install -g n && sudo n 10 && hash -d npm"
+    command "sudo npm install -g n && sudo n 10"
   end
 
   execute "ssh-keyscan" do
