@@ -71,6 +71,10 @@ if !Dir.exists?("#{healthcheck_root}")
     action :install
   end
 
+  execute "update-node" do
+    command "sudo npm install -g n && sudo n 10"
+  end
+
   execute "ssh-keyscan" do
     command "ssh-keyscan github.com >> ~/.ssh/known_hosts"
   end
