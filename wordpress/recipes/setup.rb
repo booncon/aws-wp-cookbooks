@@ -63,12 +63,8 @@ if !Dir.exists?("#{healthcheck_root}")
     action :install
   end
 
-  apt_package "npm" do
-    action :install
-  end
-
-  execute "update-node" do
-    command "sudo npm install -g n && sudo n 10"
+  execute "snap-install-node" do
+    command "snap install node --channel=10/stable --classic"
   end
 
   execute "ssh-keyscan" do
